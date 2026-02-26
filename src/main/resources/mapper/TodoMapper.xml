@@ -8,29 +8,92 @@
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="completed" column="completed"/>
+        <result property="priority" column="priority"/>
+        <result property="createdAt" column="created_at"/>
     </resultMap>
 
-    <select id="findAll" resultMap="TodoResultMap">
-        SELECT id, title, completed
+    <select id="findPageByCondition" resultMap="TodoResultMap">
+        SELECT id, title, completed, priority, created_at
         FROM todos
-        ORDER BY id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                title LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+
+        <choose>
+            <when test="sort == 'title'">
+                ORDER BY title
+                <choose>
+                    <when test="direction == 'asc'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </when>
+            <when test="sort == 'completed'">
+                ORDER BY completed
+                <choose>
+                    <when test="direction == 'asc'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </when>
+            <when test="sort == 'priority'">
+                <choose>
+                    <when test="direction == 'asc'">
+                        ORDER BY CASE priority
+                            WHEN 'LOW' THEN 1
+                            WHEN 'MEDIUM' THEN 2
+                            WHEN 'HIGH' THEN 3
+                            ELSE 4
+                        END ASC
+                    </when>
+                    <otherwise>
+                        ORDER BY CASE priority
+                            WHEN 'HIGH' THEN 1
+                            WHEN 'MEDIUM' THEN 2
+                            WHEN 'LOW' THEN 3
+                            ELSE 4
+                        END ASC
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY created_at
+                <choose>
+                    <when test="direction == 'asc'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+        , id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countByCondition" resultType="long">
+        SELECT COUNT(*)
+        FROM todos
+        <where>
+            <if test="keyword != null and keyword != ''">
+                title LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
     </select>
 
     <select id="findById" parameterType="long" resultMap="TodoResultMap">
-        SELECT id, title, completed
+        SELECT id, title, completed, priority, created_at
         FROM todos
         WHERE id = #{id}
     </select>
 
     <insert id="insert" parameterType="com.example.demo.model.Todo" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO todos (title, completed)
-        VALUES (#{title}, #{completed})
+        INSERT INTO todos (title, completed, priority)
+        VALUES (#{title}, #{completed}, #{priority})
     </insert>
 
     <update id="update" parameterType="com.example.demo.model.Todo">
         UPDATE todos
         SET title = #{title},
-            completed = #{completed}
+            completed = #{completed},
+            priority = #{priority}
         WHERE id = #{id}
     </update>
 

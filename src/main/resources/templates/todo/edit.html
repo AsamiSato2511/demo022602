@@ -16,6 +16,11 @@
                     <h1 class="h4 mb-4">ToDo編集</h1>
 
                     <form th:action="@{/todo/{id}/update(id=${todo.id})}" method="post">
+                        <input type="hidden" name="keyword" th:value="${keyword}">
+                        <input type="hidden" name="sort" th:value="${sort}">
+                        <input type="hidden" name="direction" th:value="${direction}">
+                        <input type="hidden" name="page" th:value="${page}">
+
                         <div class="mb-4">
                             <label for="title" class="form-label">タイトル</label>
                             <input type="text" id="title" name="title" class="form-control"
@@ -24,7 +29,8 @@
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">更新する</button>
-                            <a href="/todo" class="btn btn-outline-secondary">戻る</a>
+                            <a th:href="@{/todo(keyword=${keyword},sort=${sort},direction=${direction},page=${page})}"
+                               class="btn btn-outline-secondary">戻る</a>
                         </div>
                     </form>
                 </div>

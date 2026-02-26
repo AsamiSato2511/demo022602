@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -15,10 +15,34 @@
                 <div class="card-body p-4">
                     <h1 class="h4 mb-4">ToDo新規登録</h1>
 
-                    <form th:action="@{/todo/confirm}" method="post">
+                    <form th:action="@{/todo/confirm}" method="post" th:object="${todoForm}">
+                        <div class="mb-4">
+                            <label for="author" class="form-label">作成者</label>
+                            <input type="text" id="author" th:field="*{author}" class="form-control" placeholder="作成者を入力してください">
+                            <div class="text-danger mt-1 small" th:if="${#fields.hasErrors('author')}" th:errors="*{author}">作成者エラー</div>
+                        </div>
+
                         <div class="mb-4">
                             <label for="title" class="form-label">タイトル</label>
-                            <input type="text" id="title" name="title" class="form-control" placeholder="タイトルを入力してください" required>
+                            <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="タイトルを入力してください">
+                            <div class="text-danger mt-1 small" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">タイトルエラー</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="priority" class="form-label">優先度</label>
+                            <select id="priority" th:field="*{priority}" class="form-select">
+                                <option th:each="p : ${T(com.example.demo.model.Priority).values()}"
+                                        th:value="${p.name()}"
+                                        th:text="${p.label}"
+                                        th:selected="${p == todoForm.priority}">中</option>
+                            </select>
+                            <div class="text-danger mt-1 small" th:if="${#fields.hasErrors('priority')}" th:errors="*{priority}">優先度エラー</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="detail" class="form-label">詳細</label>
+                            <textarea id="detail" th:field="*{detail}" class="form-control" rows="4" placeholder="詳細を入力してください（任意）"></textarea>
+                            <div class="text-danger mt-1 small" th:if="${#fields.hasErrors('detail')}" th:errors="*{detail}">詳細エラー</div>
                         </div>
 
                         <div class="d-flex gap-2">

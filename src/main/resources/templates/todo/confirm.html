@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -17,9 +17,16 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-header">確認内容</div>
                     <div class="card-body">
-                        <label for="title" class="form-label">タイトル</label>
-                        <input type="text" id="title" class="form-control" th:value="${title}" readonly>
-                        <input type="hidden" name="title" th:value="${title}">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">タイトル</label>
+                            <input type="text" id="title" class="form-control" th:value="${title}" readonly>
+                            <input type="hidden" name="title" th:value="${title}">
+                        </div>
+                        <div>
+                            <label for="priority" class="form-label">優先度</label>
+                            <input type="text" id="priority" class="form-control" th:value="${priority.label}" readonly>
+                            <input type="hidden" name="priority" th:value="${priority.name()}">
+                        </div>
                     </div>
                 </div>
 
